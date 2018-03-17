@@ -3,7 +3,7 @@ set nocompatible " be iMproved
 set rtp+=~/.vim/bundle/Vundle.vim
 "call plug#begin('~/.vim/plugged')
 call vundle#begin()
-"Plug 'dracula/vim', { 'as': 'dracula' }
+Plugin 'dracula/vim'
 Plugin 'MarcWeber/vim-addon-mw-utils'
 Plugin 'tomtom/tlib_vim'
 Plugin 'honza/vim-snippets'
@@ -30,6 +30,8 @@ call vundle#end()
 "call plug#end()
 
 set autoindent 
+
+set guifont=Droid\ Sans\ Mono\ 12
 
 syntax on                 " Enable syntax highlighting
 filetype plugin indent on " Enable filetype-specific indenting and plugins
