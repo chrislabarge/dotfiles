@@ -5,6 +5,7 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 Plugin 'dracula/vim'
 Plugin 'MarcWeber/vim-addon-mw-utils'
+Plugin 'itchyny/lightline.vim'
 Plugin 'tomtom/tlib_vim'
 Plugin 'honza/vim-snippets'
 "snippet stuff
@@ -32,6 +33,14 @@ call vundle#end()
 set autoindent 
 
 set guifont=Droid\ Sans\ Mono\ 12
+set guioptions -=m
+set guioptions -=T
+set laststatus=2
+set noshowmode
+
+let g:lightline = {
+      \	'colorscheme': 'Dracula',
+      \ }
 
 syntax on                 " Enable syntax highlighting
 filetype plugin indent on " Enable filetype-specific indenting and plugins
