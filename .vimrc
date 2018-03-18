@@ -8,6 +8,8 @@ Plugin 'MarcWeber/vim-addon-mw-utils'
 Plugin 'itchyny/lightline.vim'
 Plugin 'tomtom/tlib_vim'
 Plugin 'honza/vim-snippets'
+Plugin 'w0rp/ale'
+
 "snippet stuff
 Plugin 'garbas/vim-snipmate'
 
@@ -40,6 +42,10 @@ set noshowmode
 
 let g:lightline = {
       \	'colorscheme': 'Dracula',
+      \ }
+
+let g:ale_fixers = {
+      \	'ruby': ['rubocop'],
       \ }
 
 syntax on                 " Enable syntax highlighting
@@ -103,3 +109,4 @@ map <C-n> :NERDTreeToggle<CR>
 
 set clipboard=unnamed
 set nu
+autocmd BufWritePre * :%s/\s\+$//e
