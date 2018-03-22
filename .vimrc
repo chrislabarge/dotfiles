@@ -32,7 +32,7 @@ call vundle#end()
 
 "call plug#end()
 
-set autoindent 
+set autoindent
 
 set guifont=Droid\ Sans\ Mono\ 12
 set guioptions -=m
@@ -104,9 +104,11 @@ if exists("+undofile")
 	set undofile
 endif
 
+inoremap jj <ESC>
 
 map <C-n> :NERDTreeToggle<CR>
 
 set clipboard=unnamed
 set nu
 autocmd BufWritePre * :%s/\s\+$//e
+"xnoremap p pgvy
