@@ -27,6 +27,10 @@ Plugin 'ervandew/supertab'
 Plugin 'kien/ctrlp.vim'
 Plugin 'scrooloose/nerdtree'
 Plugin 'dbakker/vim-projectroot'
+Plugin 'othree/html5.vim'
+Plugin 'pangloss/vim-javascript'
+Plugin 'tpope/vim-markdown'
+Plugin 'hail2u/vim-css3-syntax'
 
 call vundle#end()
 
@@ -105,6 +109,7 @@ if exists("+undofile")
 endif
 
 inoremap jj <ESC>
+inoremap jk <ESC>
 
 map <C-n> :NERDTreeToggle<CR>
 
