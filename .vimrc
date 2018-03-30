@@ -31,6 +31,9 @@ Plugin 'othree/html5.vim'
 Plugin 'pangloss/vim-javascript'
 Plugin 'tpope/vim-markdown'
 Plugin 'hail2u/vim-css3-syntax'
+Plugin 'mxw/vim-jsx'
+Plugin 'mattn/emmet-vim'
+Plugin 'skywind3000/asyncrun.vim'
 
 call vundle#end()
 
@@ -38,7 +41,7 @@ call vundle#end()
 
 set autoindent
 
-set guifont=Droid\ Sans\ Mono\ 12
+set guifont=Monospace\ 12
 set guioptions -=m
 set guioptions -=T
 set laststatus=2
@@ -50,19 +53,44 @@ let g:lightline = {
 
 let g:ale_fixers = {
       \	'ruby': ['rubocop'],
+      \ 'javascript': ['eslint'],
+      \ 'jsx': ['eslint'],
       \ }
+"let g:ale_linter_aliases = {'jsx': 'css'}
+let g:ale_sign_error = '●' " Less aggressive than the default '>>'
+let g:ale_sign_warning = '.'
+let g:ale_lint_on_enter = 0 " Less distracting when opening a new file
+
 
 syntax on                 " Enable syntax highlighting
 filetype plugin indent on " Enable filetype-specific indenting and plugins
+
+let g:user_emmet_leader_key='<Tab>'
+let g:user_emmet_settings = {
+  \  'javascript.jsx' : {
+    \      'extends' : 'jsx',
+    \  },
+  \}
+
 
 augroup myfiletypes
 	" Clear old autocmds in group
 	autocmd!
 	" autoindent with two spaces, always expand tabs
-	autocmd FileType ruby,eruby,yaml,markdown set ai sw=2 sts=2 et
+	autocmd FileType ruby,eruby,:yaml,markdown set ai sw=2 sts=2 et
 augroup END
 
 syntax enable
+set tabstop=2       " The width of a TAB is set to 4.
+                    " Still it is a \t. It is just that
+                    " Vim will interpret it to be having
+                    " a width of 4.
+
+set shiftwidth=2    " Indents will have a width of 4
+
+set softtabstop=2   " Sets the number of columns for a TAB
+
+set expandtab       " Expand TABs to spaces
 
 " Tab completion
 " set wildmode=list:longest,list:full
@@ -115,5 +143,15 @@ map <C-n> :NERDTreeToggle<CR>
 
 set clipboard=unnamed
 set nu
+"gets rid of whitespace
 autocmd BufWritePre * :%s/\s\+$//e
+"sets the jsx filetype for each file
+
+"augroup FiletypeGroup
+"    autocmd!
+"    au BufNewFile,BufRead *.jsx set filetype=javascript.jsx
+"augroup END
+
+"This is for formatting the js files on save.
+autocmd BufWritePost *.js AsyncRun -post=checktime ./node_modules/.bin/eslint --fix %
 "xnoremap p pgvy
