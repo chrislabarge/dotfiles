@@ -32,8 +32,9 @@ Plugin 'pangloss/vim-javascript'
 Plugin 'tpope/vim-markdown'
 Plugin 'hail2u/vim-css3-syntax'
 Plugin 'mxw/vim-jsx'
-Plugin 'mattn/emmet-vim'
+"Plugin 'mattn/emmet-vim'
 Plugin 'skywind3000/asyncrun.vim'
+Plugin 'tpope/vim-fugitive'
 
 call vundle#end()
 
@@ -60,6 +61,7 @@ let g:ale_fixers = {
 let g:ale_sign_error = '●' " Less aggressive than the default '>>'
 let g:ale_sign_warning = '.'
 let g:ale_lint_on_enter = 0 " Less distracting when opening a new file
+let g:ale_set_highlights = 0
 
 
 syntax on                 " Enable syntax highlighting
@@ -140,6 +142,15 @@ inoremap jj <ESC>
 inoremap jk <ESC>
 
 map <C-n> :NERDTreeToggle<CR>
+
+"window splits
+set splitbelow
+set splitright
+
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
 
 set clipboard=unnamed
 set nu
