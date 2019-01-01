@@ -7,15 +7,16 @@ Plugin 'dracula/vim'
 Plugin 'MarcWeber/vim-addon-mw-utils'
 Plugin 'itchyny/lightline.vim'
 Plugin 'tomtom/tlib_vim'
-Plugin 'honza/vim-snippets'
 Plugin 'junegunn/goyo.vim'
 Plugin 'junegunn/limelight.vim'
 
 "snippet stuff
-Plugin 'garbas/vim-snipmate'
+"Plugin 'garbas/vim-snipmate'
 
 "rails
 Plugin 'tpope/vim-rails.git'
+
+"Plugin 'asux/vim-capybara'
 
 Plugin 'gmarik/vundle'
 Plugin 'vim-ruby/vim-ruby'
@@ -44,6 +45,12 @@ Plugin 'prabirshrestha/asyncomplete.vim'
 Plugin 'prabirshrestha/async.vim'
 Plugin 'prabirshrestha/vim-lsp'
 Plugin 'prabirshrestha/asyncomplete-lsp.vim'
+
+Plugin 'SirVer/ultisnips'
+Plugin 'honza/vim-snippets'
+Plugin 'prabirshrestha/asyncomplete-ultisnips.vim'
+Plugin 'prabirshrestha/asyncomplete-buffer.vim'
+Plugin 'yami-beta/asyncomplete-omni.vim'
 
 call vundle#end()
 
@@ -77,6 +84,7 @@ let g:limelight_conceal_ctermfg = 'gray'
 
 
 syntax on                 " Enable syntax highlighting
+colo dracula
 filetype plugin indent on " Enable filetype-specific indenting and plugins
 "set list listchars=tab:\ \ ,trail:·
 
@@ -242,25 +250,18 @@ if executable('solargraph')
 endif
 
 
-"inoremap <expr> <Tab> snipMate#CanBeTriggered() ?  "\<Plug>snipMateTrigger" : (pumvisible() ? "\<C-n>" : "\<Tab>")
-inoremap <expr> <C-j> (pumvisible() ? "\<C-n>" : "\<c-j>")
-inoremap <expr> <C-k> pumvisible() ? "\<C-p>" : "\<c-k>"
+inoremap <expr> <TAB> (pumvisible() ? "\<C-n>" : "\<TAB>")
+inoremap <expr> <S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<cr>"
+inoremap <expr> <C-j> (pumvisible() ? "\<C-n>" : "\<C-j>")
+inoremap <expr> <C-k> pumvisible() ? "\<C-p>" : "\<C-k>"
 "
-"let g:asyncomplete_auto_popup = 0
-"
-"function! s:check_back_space() abort
-"    let col = col('.') - 1
-"    return !col || getline('.')[col - 1]  =~ '\s'
-"endfunction
-
-"inoremap <silent><expr> <TAB>
-"  \ pumvisible() ? "\<C-n>" :
-"  \ <SID>check_back_space() ? "\<TAB>" :
-"  \ asyncomplete#force_refresh()
-"inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
 let g:asyncomplete_remove_duplicates = 1
+
+"this is for removing the status on completion on the bottom
+"set shortmess+=c
+
 "let g:asyncomplete_smart_completion = 1
 set completeopt-=preview
 "autocmd FileType ruby setlocal omnifunc=lsp#complete
@@ -269,3 +270,29 @@ au VimEnter * highlight clear SignColumn
 
 "Fuzzy file finder
 let g:Lf_ShortcutF = '<C-P>'
+
+let g:UltiSnipsExpandTrigger="<c-e>"
+
+nnoremap gd :LspDefinition<CR>
+
+call asyncomplete#register_source(asyncomplete#sources#ultisnips#get_source_options({
+    \ 'name': 'ultisnips',
+    \ 'whitelist': ['*'],
+    \ 'completor': function('asyncomplete#sources#ultisnips#completor'),
+    \ }))
+
+call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
+    \ 'name': 'buffer',
+    \ 'whitelist': ['*'],
+    \ 'blacklist': ['go'],
+    \ 'completor': function('asyncomplete#sources#buffer#completor'),
+    \ }))
+
+"call asyncomplete#register_source(asyncomplete#sources#omni#get_source_options({
+"    \ 'name': 'omni',
+"    \ 'whitelist': ['*'],
+"    \ 'blacklist': ['c', 'cpp', 'html'],
+"    \ 'completor': function('asyncomplete#sources#omni#completor')
+"    \  }))
+
+ au VimEnter * highlight Pmenu ctermbg=black guibg=black
