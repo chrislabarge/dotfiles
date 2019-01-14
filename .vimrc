@@ -9,6 +9,10 @@ Plugin 'itchyny/lightline.vim'
 Plugin 'tomtom/tlib_vim'
 Plugin 'junegunn/goyo.vim'
 Plugin 'junegunn/limelight.vim'
+Plugin 'dhruvasagar/vim-zoom'
+
+"tmux
+Plugin 'christoomey/vim-tmux-navigator'
 
 "snippet stuff
 "Plugin 'garbas/vim-snipmate'
@@ -25,7 +29,6 @@ Plugin 'tpope/vim-surround'
 Plugin 'jiangmiao/auto-pairs'
 "Plugin 'ervandew/supertab'
 "
-" ctrlp replacement
 Plugin 'Yggdroot/LeaderF'
 
 Plugin 'scrooloose/nerdtree'
@@ -51,6 +54,7 @@ Plugin 'honza/vim-snippets'
 Plugin 'prabirshrestha/asyncomplete-ultisnips.vim'
 Plugin 'prabirshrestha/asyncomplete-buffer.vim'
 Plugin 'yami-beta/asyncomplete-omni.vim'
+Plugin 'wellle/tmux-complete.vim'
 
 call vundle#end()
 
@@ -294,5 +298,10 @@ call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options
 "    \ 'blacklist': ['c', 'cpp', 'html'],
 "    \ 'completor': function('asyncomplete#sources#omni#completor')
 "    \  }))
+"
+"let g:tmuxcomplete#trigger = 'completefunc'
 
- au VimEnter * highlight Pmenu ctermbg=black guibg=black
+nmap <C-f> :tabnew %<CR>
+nmap <C-m> :tabclose<CR>
+
+au VimEnter * highlight Pmenu ctermbg=black guibg=black
