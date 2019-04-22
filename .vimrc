@@ -3,6 +3,8 @@ set nocompatible " be iMproved
 set rtp+=~/.vim/bundle/Vundle.vim
 "call plug#begin('~/.vim/plugged')
 call vundle#begin()
+
+
 Plugin 'dracula/vim'
 Plugin 'MarcWeber/vim-addon-mw-utils'
 Plugin 'itchyny/lightline.vim'
@@ -10,6 +12,7 @@ Plugin 'tomtom/tlib_vim'
 Plugin 'junegunn/goyo.vim'
 Plugin 'junegunn/limelight.vim'
 Plugin 'dhruvasagar/vim-zoom'
+Plugin 'luochen1990/rainbow'
 
 "tmux
 Plugin 'christoomey/vim-tmux-navigator'
@@ -56,9 +59,12 @@ Plugin 'prabirshrestha/asyncomplete-buffer.vim'
 Plugin 'yami-beta/asyncomplete-omni.vim'
 Plugin 'wellle/tmux-complete.vim'
 
+"Plugin 'thoughtbot/vim-rspec'
+"map <Leader>s :call RunNearestSpec()<CR>
+
+
 call vundle#end()
 
-"call plug#end()
 
 set autoindent
 
@@ -68,28 +74,24 @@ set guioptions -=T
 set laststatus=2
 set noshowmode
 
+let g:rainbow_active = 1
+
 let g:lightline = {
       \	'colorscheme': 'Dracula',
       \ }
 
-"let g:ale_fixers = {
-"      \	'ruby': ['rubocop'],
-"      \ 'javascript': ['eslint'],
-"      \ 'jsx': ['eslint'],
-"      \ }
-"let g:ale_linter_aliases = {'jsx': 'css'}
-"let g:ale_sign_error = '●' " Less aggressive than the default '>>'
-"let g:ale_sign_warning = '·'
-"let g:ale_lint_on_enter = 0 " Less distracting when opening a new file
-"let g:ale_set_highlights = 0
-
-
 let g:limelight_conceal_ctermfg = 'gray'
 
 
-syntax on                 " Enable syntax highlighting
-colo dracula
+syntax enable                 " Enable syntax highlighting
+color dracula
+"vvv Uncomment for theme colors vvvv
+"set termguicolors
+
 filetype plugin indent on " Enable filetype-specific indenting and plugins
+
+
+
 "set list listchars=tab:\ \ ,trail:·
 
 let g:user_emmet_leader_key='<Tab>'
@@ -285,12 +287,12 @@ call asyncomplete#register_source(asyncomplete#sources#ultisnips#get_source_opti
     \ 'completor': function('asyncomplete#sources#ultisnips#completor'),
     \ }))
 
-call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
-    \ 'name': 'buffer',
-    \ 'whitelist': ['*'],
-    \ 'blacklist': ['go'],
-    \ 'completor': function('asyncomplete#sources#buffer#completor'),
-    \ }))
+"call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
+"    \ 'name': 'buffer',
+"    \ 'whitelist': ['*'],
+"    \ 'blacklist': ['go'],
+"    \ 'completor': function('asyncomplete#sources#buffer#completor'),
+"    \ }))
 
 "call asyncomplete#register_source(asyncomplete#sources#omni#get_source_options({
 "    \ 'name': 'omni',
@@ -299,9 +301,9 @@ call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options
 "    \ 'completor': function('asyncomplete#sources#omni#completor')
 "    \  }))
 "
-"let g:tmuxcomplete#trigger = 'completefunc'
+let g:tmuxcomplete#trigger = 'completefunc'
 
-nmap <C-f> :tabnew %<CR>
+nmap <C-n> :tabnew %<CR>
 nmap <C-m> :tabclose<CR>
 
 au VimEnter * highlight Pmenu ctermbg=black guibg=black
