@@ -248,10 +248,6 @@ au VimEnter * highlight PmenuThumb ctermbg=blue
 
 "snippets
 "
-function! NewIssue()
-
-endfunction
-
 nnoremap ,shot :-1read ~/.vim/snippets/.screenshot.rb<CR>2w
 nnoremap ,here :-1read ~/.vim/snippets/.debug_puts.rb<CR>
 nnoremap ,scenario :-1read ~/.vim/snippets/.scenario.rb<CR>v6j>wa

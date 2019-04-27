@@ -279,3 +279,12 @@ nnoremap gd :LspDefinition<CR>
 :nmap <S-ScrollWheelRight> <nop>
 :nmap <C-ScrollWheelRight> <nop>
 
+
+nnoremap ,shot :-1read ~/.vim/snippets/.screenshot.rb<CR>2w
+nnoremap ,here :-1read ~/.vim/snippets/.debug_puts.rb<CR>
+nnoremap ,scenario :-1read ~/.vim/snippets/.scenario.rb<CR>v6j>wa
+nnoremap ,issue : !gitlab issues create "" "$(cat %)"<CR>
+nnoremap ,ni :new tmp/issue.md<CR>3ja
+nnoremap ,ci :w \| !gitlab issues create "" "$(cat %)" && cp -f ~/.vim/snippets/.issue.md tmp/issue.md<CR>
+
+
