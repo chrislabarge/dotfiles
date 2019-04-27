@@ -1,1 +1,1 @@
-save_screenshot("foo.png", full:true)
+save_screenshot("foo.png", full: true)

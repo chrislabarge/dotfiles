@@ -4,64 +4,45 @@ set rtp+=~/.vim/bundle/Vundle.vim
 "call plug#begin('~/.vim/plugged')
 call vundle#begin()
 
-
 Plugin 'dracula/vim'
-Plugin 'MarcWeber/vim-addon-mw-utils'
 Plugin 'itchyny/lightline.vim'
 Plugin 'tomtom/tlib_vim'
 Plugin 'junegunn/goyo.vim'
 Plugin 'junegunn/limelight.vim'
-Plugin 'dhruvasagar/vim-zoom'
 Plugin 'luochen1990/rainbow'
-
-"tmux
 Plugin 'christoomey/vim-tmux-navigator'
-
-"snippet stuff
-"Plugin 'garbas/vim-snipmate'
-
-"rails
-Plugin 'tpope/vim-rails.git'
-
-"Plugin 'asux/vim-capybara'
-
+Plugin 'tpope/vim-rails'
 Plugin 'gmarik/vundle'
 Plugin 'vim-ruby/vim-ruby'
-
 Plugin 'tpope/vim-surround'
 Plugin 'jiangmiao/auto-pairs'
-"Plugin 'ervandew/supertab'
-"
+Plugin 'tpope/vim-fugitive'
+Plugin 'tpope/vim-unimpaired'
 Plugin 'Yggdroot/LeaderF'
 
-Plugin 'scrooloose/nerdtree'
 Plugin 'dbakker/vim-projectroot'
 Plugin 'othree/html5.vim'
 Plugin 'pangloss/vim-javascript'
 Plugin 'tpope/vim-markdown'
 Plugin 'hail2u/vim-css3-syntax'
-Plugin 'mxw/vim-jsx'
 Plugin 'tpope/vim-haml'
-"Plugin 'mattn/emmet-vim'
 
-"Plugin 'skywind3000/asyncrun.vim'
-"Plugin 'w0rp/ale'
-Plugin 'tpope/vim-fugitive'
+Plugin 'SirVer/ultisnips'
+Plugin 'honza/vim-snippets'
+Plugin 'MarcWeber/vim-addon-mw-utils'
+
 Plugin 'prabirshrestha/asyncomplete.vim'
 Plugin 'prabirshrestha/async.vim'
 Plugin 'prabirshrestha/vim-lsp'
 Plugin 'prabirshrestha/asyncomplete-lsp.vim'
-
-Plugin 'SirVer/ultisnips'
-Plugin 'honza/vim-snippets'
 Plugin 'prabirshrestha/asyncomplete-ultisnips.vim'
 Plugin 'prabirshrestha/asyncomplete-buffer.vim'
 Plugin 'yami-beta/asyncomplete-omni.vim'
 Plugin 'wellle/tmux-complete.vim'
 
+"Plugin 'mxw/vim-jsx'
 "Plugin 'thoughtbot/vim-rspec'
-"map <Leader>s :call RunNearestSpec()<CR>
-
+"Plugin 'asux/vim-capybara'
 
 call vundle#end()
 
@@ -73,6 +54,9 @@ set guioptions -=m
 set guioptions -=T
 set laststatus=2
 set noshowmode
+"
+"Insert Complete height limit
+set pumheight=15
 
 let g:rainbow_active = 1
 
@@ -89,8 +73,6 @@ color dracula
 "set termguicolors
 
 filetype plugin indent on " Enable filetype-specific indenting and plugins
-
-
 
 "set list listchars=tab:\ \ ,trail:·
 
@@ -110,20 +92,13 @@ autocmd FileType ruby,eruby,:yaml,markdown,haml set ai sw=2 sts=2 et
 augroup END
 
 syntax enable
-set tabstop=2       " The width of a TAB is set to 4.
-                    " Still it is a \t. It is just that
-                    " Vim will interpret it to be having
-                    " a width of 4.
+set tabstop=2
 
-set shiftwidth=2    " Indents will have a width of 4
+set shiftwidth=2
 
-set softtabstop=2   " Sets the number of columns for a TAB
+set softtabstop=2
 
-set expandtab       " Expand TABs to spaces
-
-" Tab completion
-" set wildmode=list:longest,list:full
-" set wildignore+=*.o,*.obj,.git,*.rbc,*.class,.svn,vendor/gems/*
+set expandtab
 
 """"""""""""""""""""""""""""""""""""""""
 " BACKUP / TMP FILES
@@ -167,8 +142,6 @@ endif
 
 inoremap jk <ESC>
 
-map <C-n> :NERDTreeToggle<CR>
-
 "window splits
 set splitbelow
 set splitright
@@ -189,51 +162,14 @@ autocmd BufWritePre * :%s/\s\+$//e
 "    au BufNewFile,BufRead *.jsx set filetype=javascript.jsx
 "augroup END
 
-"This is for formatting the js files on save.
-autocmd BufWritePost *.js AsyncRun -post=checktime ./node_modules/.bin/eslint --fix %
-"xnoremap p pgvy
-"
 function! s:goyo_enter()
   set spell
 endfunction
 
 autocmd! User GoyoEnter nested call <SID>goyo_enter()
-
-"resizing
-" ===== Seeing Is Believing =====
-" Assumes you have a Ruby with SiB available in the PATH
-" If it doesn't work, you may need to `gem install seeing_is_believing -v
-" 3.0.0.beta.6`
-" ...yeah, current release is a beta, which won't auto-install
-
-" Annotate every line
-
-nmap <leader>b :%!seeing_is_believing --timeout 12 --line-length 500 --number-of-captures 300 --alignment-strategy chunk<CR>;
-
-" Annotate marked lines
-
-nmap <leader>n :%.!seeing_is_believing --timeout 12 --line-length 500 --number-of-captures 300 --alignment-strategy chunk --xmpfilter-style<CR>;
-
-" Remove annotations
-
-nmap <leader>c :%.!seeing_is_believing --clean<CR>;
-
-" Mark the current line for annotation
-
-nnoremap <leader>m A # => <Esc>
-
-" Mark the highlighted lines for annotation
-
-vnoremap <leader>m :norm A # => <Esc>
-
-
 autocmd FileType ruby compiler ruby
 
 set shell=/bin/sh
-
-"let g:SuperTabDefaultCompletionType = "<C-X><C-O>"
-"let g:SuperTabDefaultCompletionType = "<C-X>"
-"let g:SuperTabDefaultCompletionType = "context"
 
 let g:lsp_auto_enable = 1
 let g:lsp_signs_enabled = 1         " enable diagnostic signs / we use ALE for now
@@ -303,7 +239,59 @@ call asyncomplete#register_source(asyncomplete#sources#ultisnips#get_source_opti
 "
 let g:tmuxcomplete#trigger = 'completefunc'
 
-nmap <C-n> :tabnew %<CR>
-nmap <C-m> :tabclose<CR>
+nmap <C-W>n :tabnew %<CR>
+nmap <C-W>x :tabclose<CR>
 
-au VimEnter * highlight Pmenu ctermbg=black guibg=black
+au VimEnter * highlight Pmenu ctermbg=black guibg=black ctermfg=blue
+au VimEnter * highlight PmenuSbar ctermbg=black
+au VimEnter * highlight PmenuThumb ctermbg=blue
+
+"snippets
+"
+function! NewIssue()
+
+endfunction
+
+nnoremap ,shot :-1read ~/.vim/snippets/.screenshot.rb<CR>2w
+nnoremap ,here :-1read ~/.vim/snippets/.debug_puts.rb<CR>
+nnoremap ,scenario :-1read ~/.vim/snippets/.scenario.rb<CR>v6j>wa
+nnoremap ,issue : !gitlab issues create "" "$(cat %)"<CR>
+nnoremap ,ni :new tmp/issue.md<CR>3ja
+nnoremap ,ci :w \| !gitlab issues create "" "$(cat %)" && cp -f ~/.vim/snippets/.issue.md tmp/issue.md<CR>
+
+
+" ----------------------------------------------------------------------------
+" DiffRev
+" ----------------------------------------------------------------------------
+"let s:git_status_dictionary = {
+"            \ "A": "Added",
+"            \ "B": "Broken",
+"            \ "C": "Copied",
+"            \ "D": "Deleted",
+"            \ "M": "Modified",
+"            \ "R": "Renamed",
+"            \ "T": "Changed",
+"            \ "U": "Unmerged",
+"            \ "X": "Unknown"
+"            \ }
+"function! s:get_diff_files(rev)
+"  Gcd
+"  exe 'nnoremap <leader>gr :Gdiff ' . a:rev . ':%<CR>'
+"
+"  let list = map(split(system(
+"              \ 'git diff --name-status '.a:rev), '\n'),
+"              \ '{"filename": matchstr(v:val, "\\S\\+$"),"text":s:git_status_dictionary[matchstr(v:val, "^\\w")]}'
+"              \ )
+"  call setqflist(list)
+"  copen
+"
+"endfunction
+
+"command! -nargs=1 DiffRev call s:get_diff_files(<q-args>)
+
+" ----------------------------------------------------------------------------
+" Cursor Change on Insert
+" ----------------------------------------------------------------------------
+let &t_SI = "\<Esc>[6 q"
+let &t_SR = "\<Esc>[4 q"
+let &t_EI = "\<Esc>[2 q"
