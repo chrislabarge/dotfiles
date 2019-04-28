@@ -51,8 +51,10 @@ Plugin 'MarcWeber/vim-addon-mw-utils'
 "Plugin 'yami-beta/asyncomplete-omni.vim'
 "Plugin 'wellle/tmux-complete.vim'
 
-"Plugin 'thoughtbot/vim-rspec'
-"map <Leader>s :call RunNearestSpec()<CR>
+Plugin 'thoughtbot/vim-rspec'
+
+Plugin 'tpope/vim-dispatch'
+
 Plugin 'tpope/vim-unimpaired'
 
 call vundle#end()
@@ -79,6 +81,7 @@ color dracula
 "set termguicolors
 
 filetype plugin indent on " Enable filetype-specific indenting and plugins
+
 
 
 
@@ -287,4 +290,18 @@ nnoremap ,issue : !gitlab issues create "" "$(cat %)"<CR>
 nnoremap ,ni :new tmp/issue.md<CR>3ja
 nnoremap ,ci :w \| !gitlab issues create "" "$(cat %)" && cp -f ~/.vim/snippets/.issue.md tmp/issue.md<CR>
 
+nnoremap <C-W>q :Copen<CR>
 
+"Clean quickfix window
+nnoremap ,qc :cexpr []<CR>
+
+map ,l :call RunLastSpec()<CR>
+map ,s :call RunNearestSpec()<CR>
+map ,a :call RunCurrentSpecFile()<CR>
+map ,af :Dispatch! rspec --only-failures
+
+let g:rspec_command = "Dispatch! rspec {spec}"
+
+set background=dark
+
+set term=screen-256color
