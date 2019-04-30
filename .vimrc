@@ -4,7 +4,7 @@ set rtp+=~/.vim/bundle/Vundle.vim
 "call plug#begin('~/.vim/plugged')
 call vundle#begin()
 
-Plugin 'dracula/vim'
+"Plugin 'dracula/vim'
 Plugin 'itchyny/lightline.vim'
 Plugin 'tomtom/tlib_vim'
 Plugin 'junegunn/goyo.vim'
@@ -39,9 +39,13 @@ Plugin 'prabirshrestha/asyncomplete-ultisnips.vim'
 Plugin 'prabirshrestha/asyncomplete-buffer.vim'
 Plugin 'yami-beta/asyncomplete-omni.vim'
 Plugin 'wellle/tmux-complete.vim'
+Plugin 'thoughtbot/vim-rspec'
+Plugin 'tpope/vim-dispatch'
+Plugin 'tpope/vim-git'
+Plugin 'idanarye/vim-merginal'
+Plugin 'flazz/vim-colorschemes'
 
 "Plugin 'mxw/vim-jsx'
-"Plugin 'thoughtbot/vim-rspec'
 "Plugin 'asux/vim-capybara'
 
 call vundle#end()
@@ -68,7 +72,7 @@ let g:limelight_conceal_ctermfg = 'gray'
 
 
 syntax enable                 " Enable syntax highlighting
-color dracula
+colorscheme dracula
 "vvv Uncomment for theme colors vvvv
 "set termguicolors
 
@@ -256,6 +260,23 @@ nnoremap ,ni :new tmp/issue.md<CR>3ja
 nnoremap ,ci :w \| !gitlab issues create "" "$(cat %)" && cp -f ~/.vim/snippets/.issue.md tmp/issue.md<CR>
 
 
+nnoremap ,mc : !gitlab comments create 'new-branch' "$(echo @%)"  "$(echo line('.'))" "$(cat %)"
+
+nnoremap <C-W>q :Copen<CR>
+"Clean quickfix window
+nmap ,qc :cexpr []<CR>
+
+map ,l :call RunLastSpec()<CR>
+map ,s :call RunNearestSpec()<CR>
+map ,a :call RunCurrentSpecFile()<CR>
+map ,af :Dispatch! rspec --only-failures<CR>
+
+let g:rspec_command = "Dispatch! rspec --color {spec}"
+
+set background=dark
+
+set term=screen-256color
+
 " ----------------------------------------------------------------------------
 " DiffRev
 " ----------------------------------------------------------------------------
@@ -291,3 +312,7 @@ nnoremap ,ci :w \| !gitlab issues create "" "$(cat %)" && cp -f ~/.vim/snippets/
 let &t_SI = "\<Esc>[6 q"
 let &t_SR = "\<Esc>[4 q"
 let &t_EI = "\<Esc>[2 q"
+
+filetype indent plugin on
+au FileType gitcommit setlocal tw=72
+
