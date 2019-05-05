@@ -56,6 +56,7 @@ Plugin 'thoughtbot/vim-rspec'
 Plugin 'tpope/vim-dispatch'
 
 Plugin 'tpope/vim-unimpaired'
+Plugin 'idanarye/vim-merginal'
 
 call vundle#end()
 
@@ -301,6 +302,27 @@ map ,a :call RunCurrentSpecFile()<CR>
 map ,af :Dispatch! rspec --only-failures
 
 let g:rspec_command = "Dispatch! rspec {spec}"
+
+function CreateMergeRequestComment(...)
+  let params =  a:000
+  let line = a:1
+  let file_name = a:2
+
+  echom line
+  echom file_name
+
+  execute "! " "gitlab merge_requests create '' " file_name line "'THIS IS A TEST'"
+
+endfunction
+
+nnoremap ,cmrc :call CreateMergeRequestComment(line("."), @%)<CR>
+
+function! GoToDefinition()
+
+  grep -R 'def \<<cword>\>' ./
+endfunction
+
+map gd :call GoToDefinition()<CR><CR>zz
 
 set background=dark
 
