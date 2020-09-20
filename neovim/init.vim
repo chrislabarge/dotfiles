@@ -5,29 +5,61 @@ filetype off
 runtime macros/matchit.vim
 call plug#begin('~/.vim/plugged')
 
+"Utilities
+Plug 'tomtom/tlib_vim'
+Plug 'honza/vim-snippets'
+Plug 'kamykn/spelunker.vim'
+Plug 'rhysd/devdocs.vim'
+Plug 'machakann/vim-swap'
+
+"Root-Scope Tool
+Plug 'dbakker/vim-projectroot'
+
+"Fuzzy Finder
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
+
+"Status Line
+Plug 'itchyny/lightline.vim'
+
+"Linter
+Plug 'dense-analysis/ale'
+"
+" Intellisense
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'wellle/tmux-complete.vim'
+
+"Git Tools
+Plug 'tpope/vim-fugitive'
+Plug 'idanarye/vim-merginal' " Requires fugitive
+
+"Color Themes
 Plug 'dracula/vim', { 'name': 'dracula'  }
 Plug 'luochen1990/rainbow'
-Plug 'flazz/vim-colorschemes'
+Plug 'altercation/vim-colors-solarized'
+"Plug 'flazz/vim-colorschemes'
 
-Plug 'itchyny/lightline.vim'
-Plug 'tomtom/tlib_vim'
-
+" Distraction Free Writing
 Plug 'junegunn/goyo.vim'
 Plug 'junegunn/limelight.vim'
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
 
+"thought-bot plug-ins
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'thoughtbot/vim-rspec'
 
+"Language plug-ins
 Plug 'hail2u/vim-css3-syntax'
 Plug 'othree/html5.vim'
 Plug 'pangloss/vim-javascript'
 Plug 'posva/vim-vue'
 Plug 'vim-ruby/vim-ruby'
 Plug 'rust-lang/rust.vim'
+Plug 'fatih/vim-go'
 
+"Tim Pope Plug-ins
 Plug 'tpope/vim-rails'
 Plug 'tpope/vim-surround'
-Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-haml'
 Plug 'tpope/vim-dispatch'
@@ -37,65 +69,30 @@ Plug 'tpope/vim-bundler'
 Plug 'tpope/vim-rvm'
 Plug 'tpope/vim-repeat'
 
-Plug 'jiangmiao/auto-pairs'
-
-Plug 'dbakker/vim-projectroot'
-
-Plug 'idanarye/vim-merginal'
-
-Plug 'dense-analysis/ale'
+"Split/Join Args and Lists
 Plug 'AndrewRadev/splitjoin.vim'
 
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'wellle/tmux-complete.vim'
-
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-Plug 'junegunn/fzf.vim'
-
-Plug 'rhysd/devdocs.vim'
-
-Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
-Plug 'honza/vim-snippets'
-Plug 'kamykn/spelunker.vim'
-
+"Calendar
+Plug 'itchyny/calendar.vim'
 
 call plug#end()
 
-filetype plugin indent on " Enable filetype-specific indenting and plugins
+" Shell executable
+set shell=/bin/zsh
+
+" When using `gf` to navigate files
+set suffixesadd+=.rb,.js,.md
+
+" Enable filetype-specific indenting and plug-ins
+filetype plugin indent on
 set autoindent
 
-set guifont=Monospace\ 12
-set suffixesadd+=.rb
-set laststatus=2
-set noshowmode
-"
-"Insert Complete height limit
-set pumheight=15
+" smart case-insensitive searches - Coupled together
+" Using smartcase (requires ignorecase)
+set ignorecase
+set smartcase
 
-let g:rainbow_active = 1
-
-let g:lightline = {
-      \	'colorscheme': 'dracula',
-      \ }
-
-let g:limelight_conceal_ctermfg = 'gray'
-
-
-let g:dracula_colorterm = 0
-syntax enable                 " Enable syntax highlighting
-colorscheme dracula
-"vvv Uncomment for theme colors vvvv
-"set termguicolors
-"set list listchars=tab:\ \ ,trail:·
-
-let g:user_emmet_leader_key='<Tab>'
-let g:user_emmet_settings = {
-  \  'javascript.jsx' : {
-    \      'extends' : 'jsx',
-    \  },
-  \}
-
-
+" TODO: Does this do anything?
 augroup myfiletypes
 " Clear old autocmds in group
 autocmd!
@@ -103,13 +100,81 @@ autocmd!
 autocmd FileType ruby,eruby,:yaml,markdown,haml set ai sw=2 sts=2 et
 augroup END
 
+" TODO: Does this overwrite the one above?
+autocmd FileType ruby compiler ruby
+
+" Have js.haml files use JS syntax
+augroup twig_ft
+  au!
+  autocmd BufNewFile,BufRead *.js.haml   set syntax=javascript
+augroup END
+
+" To allow for hml + GO syntax in HUGO files
+augroup filetypedetect
+    au! BufRead,BufNewFile * call DetectGoHtmlTmpl()
+augroup END
+
+" Yank/Copy Setting
+set clipboard=unnamed
+
+"Show Line Number
+set nu
+
+"Tab
 set tabstop=2
-
 set shiftwidth=2
-
 set softtabstop=2
-
 set expandtab
+
+" Status Line Options
+" Always show the status line
+set laststatus=2
+set noshowmode
+
+"Color Scheme Options
+let g:rainbow_active = 1
+
+let g:lightline = {
+      \ 'colorscheme': 'dracula',
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste' ],
+      \             [ 'cocstatus', 'currentfunction', 'readonly', 'filename', 'modified' ] ]
+      \ },
+      \ 'component_function': {
+      \   'cocstatus': 'coc#status',
+      \   'currentfunction': 'CocCurrentFunction'
+      \ },
+      \ }
+
+let g:limelight_conceal_ctermfg = 'gray'
+
+autocmd VimEnter * call SetupLightlineColors()
+" Allow for custom background
+let g:dracula_colorterm = 0
+
+syntax enable
+colorscheme dracula
+set background=dark
+
+"Autocomplete window colors
+au VimEnter * highlight Pmenu ctermbg=black guibg=black ctermfg=blue
+au VimEnter * highlight PmenuSbar ctermbg=black
+au VimEnter * highlight PmenuThumb ctermbg=blue
+
+""""""""""""""""""""""""""""""""""""""""
+" Custom Highlights
+""""""""""""""""""""""""""""""""""""""""
+" Don't mark URL-like things as spelling errors
+syn match UrlNoSpell '\w\+:\/\/[^[:space:]]\+' contains=@NoSpell
+" Change the color of the spell check
+highlight SpellBad ctermbg=NONE ctermfg=Red
+" Highlight and make Status keywords bold
+sy match doneStatus "\v<DONE>"
+highlight doneStatus cterm=bold ctermbg=NONE ctermfg=LightGreen
+sy match todoStatus "\v<TODO>"
+highlight todoStatus cterm=bold ctermbg=NONE ctermfg=red
+sy match testStatus "\v<TEST>"
+highlight testStatus cterm=bold ctermbg=NONE ctermfg=cyan
 
 """"""""""""""""""""""""""""""""""""""""
 " BACKUP / TMP FILES
@@ -125,25 +190,24 @@ set backupdir^=~/.vim/backup/
 set backupdir^=./.vim-backup/
 set backup
 
+""""""""""""""""""""""""""""""""""""""""
 " Save your swp files to a less annoying place than the current directory.
-" " If you have .vim-swap in the current directory, it'll use that.
-" " Otherwise it saves it to ~/.vim/swap, ~/tmp or .
+""""""""""""""""""""""""""""""""""""""""
 if isdirectory($HOME . '/.vim/swap') == 0
 :silent !mkdir -p ~/.vim/swap >/dev/null 2>&1
 endif
+
 set directory=./.vim-swap//
 set directory+=~/.vim/swap//
 set directory+=~/tmp//
 set directory+=.
 
-" viminfo stores the the state of your previous editing session
+" store state of previous session
 set viminfo+=n~/.vim/viminfo
 
+" undofile - This allows you to use undos after exiting and restarting
+" This, like swap and backups, uses .vim-undo first, then ~/.vim/undo ( :help undo-persistence )
 if exists("+undofile")
-	" undofile - This allows you to use undos after exiting and restarting
-	" This, like swap and backups, uses .vim-undo first, then ~/.vim/undo
-	" :help undo-persistence
-	" This is only present in 7.3+
 	if isdirectory($HOME . '/.vim/undo') == 0
 		:silent !mkdir -p ~/.vim/undo > /dev/null 2>&1
 	endif
@@ -152,38 +216,65 @@ if exists("+undofile")
 	set undofile
 endif
 
-inoremap jk <ESC>
+" ----------------------------------------------------------------------------
+" Cursor Change on Insert
+" ----------------------------------------------------------------------------
+if &term =~ "screen."
+    let &t_ti.="\eP\e[1 q\e\\"
+    let &t_SI.="\eP\e[5 q\e\\"
+    let &t_EI.="\eP\e[1 q\e\\"
+    let &t_te.="\eP\e[0 q\e\\"
+else
+    let &t_ti.="\<Esc>[1 q"
+    let &t_SI.="\<Esc>[5 q"
+    let &t_EI.="\<Esc>[1 q"
+    let &t_te.="\<Esc>[0 q"
+endif
 
-"window splits
-set splitbelow
-set splitright
+"Window Split Navigation
 
 nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
+"
+"window splits
+set splitbelow
+set splitright
 
-set clipboard=unnamed
-set nu
+"Enlarge Current Window by opening in a new tab
+nmap <C-W>n :tabnew %<CR>
+"
+" TODO: Is this redundant?
 "gets rid of whitespace
 autocmd BufWritePre * :%s/\s\+$//e
-"sets the jsx filetype for each file
 
-"augroup FiletypeGroup
-"    autocmd!
-"    au BufNewFile,BufRead *.jsx set filetype=javascript.jsx
-"augroup END
+"""""""""""""""""""""""""""""""""""""
+"Plugin Settings
+"""""""""""""""""""""""""""""""""""""
+" Use background dispatch process to run specs
+let g:rspec_command = "Dispatch! rspec --color {spec}"
+
+" FZF configuration to set silver-searcher as default
+let $FZF_DEFAULT_COMMAND = 'ag -g ""'
+
+"FZF file Finder
+nnoremap <Space>f :Files<CR>
+
+" For Fugitive Diff purposes
+set diffopt+=vertical
 
 function! s:goyo_enter()
   set spell
 endfunction
 
 autocmd! User GoyoEnter nested call <SID>goyo_enter()
-autocmd FileType ruby compiler ruby
 
-set shell=/bin/sh
-
+"TODO: See if I can Get rid of this this
 set hidden
+
+"Insert Complete height limit
+set pumheight=15
 
 inoremap <expr> <TAB> (pumvisible() ? "\<C-n>" : "\<TAB>")
 inoremap <expr> <S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
@@ -191,49 +282,22 @@ inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<cr>"
 inoremap <expr> <C-j> (pumvisible() ? "\<C-n>" : "\<C-j>")
 inoremap <expr> <C-k> pumvisible() ? "\<C-p>" : "\<C-k>"
 
-"let g:asyncomplete_remove_duplicates = 1
-
-"this is for removing the status on completion on the bottom
-"set shortmess+=c
-
-"let g:asyncomplete_smart_completion = 1
+"Show autocomplete context in the Preveiw window
 set completeopt-=preview
-"autocmd FileType ruby setlocal omnifunc=lsp#complete
-set signcolumn=yes
-au VimEnter * highlight clear SignColumn
 
-"Fuzzy file finder
-"let g:Lf_ShortcutF = '<Space>f'
-"
-"
-"
-nnoremap <Space>f :Files<CR>
-"let g:UltiSnipsExpandTrigger="<c-e>"
-"let g:UltiSnipsJumpForwardTrigger="<c-l>"
-"let g:UltiSnipsJumpBackwardTrigger="<c-h>"
-"let g:tmuxcomplete#trigger = ''
-"
+"""""""""""""""""""""""""
+" Custom Functions
+"""""""""""""""""""""""""
+function SetupLightlineColors() abort
+  " transparent background in statusbar
+  let l:palette = lightline#palette()
 
-nmap <C-W>n :tabnew %<CR>
-nmap <C-W>x :tabclose<CR>
+  let l:palette.normal.middle = [ [ 'NONE', 'NONE', 'NONE', 'NONE' ] ]
+  let l:palette.inactive.middle = l:palette.normal.middle
+  let l:palette.tabline.middle = l:palette.normal.middle
 
-au VimEnter * highlight Pmenu ctermbg=black guibg=black ctermfg=blue
-au VimEnter * highlight PmenuSbar ctermbg=black
-au VimEnter * highlight PmenuThumb ctermbg=blue
-
-"snippets
-"
-nnoremap <Space>shot :-1read ~/.vim/snippets/.screenshot.rb<CR>>>.
-nnoremap <Space>here :-1read ~/.vim/snippets/.debug_puts.rb<CR>
-nnoremap <Space>html :-1read ~/.vim/snippets/.write_feature_html.rb<CR>v2j>.
-nnoremap <Space>scenario :-1read ~/.vim/snippets/.scenario.rb<CR>v6j>wa
-nnoremap <Space>issue : !gitlab issues create "" "$(cat %)"<CR>
-nnoremap <Space>ni :new tmp/issue.md<CR>3ja
-nnoremap <Space>ci :w \| !gitlab issues create "" "$(cat %)" && cp -f ~/.vim/snippets/.issue.md tmp/issue.md<CR>
-
-
-nnoremap <Space>mc : !gitlab comments create 'new-branch' "$(echo @%)"  "$(echo line('.'))" "$(cat %)"
-
+  call lightline#colorscheme()
+endfunction
 
 function! QuickFix_toggle()
     for i in range(1, winnr('$'))
@@ -251,14 +315,19 @@ function! QuickFix_toggle()
     call feedkeys("+")
 endfunction
 
-nnoremap <C-W>q :Copen<CR>
-nnoremap <Space>o :call QuickFix_toggle()<CR>
-"Clean quickfix window
-nmap <Space>qc :cexpr []<CR>
-nnoremap <Space>l :call RunLastSpec()<CR>
-nnoremap <Space>s :call RunNearestSpec()<CR>
-nnoremap <Space>a :call RunCurrentSpecFile()<CR>
-nnoremap <Space>af :Dispatch! rspec --only-failures<CR>
+function DetectGoHtmlTmpl()
+    if expand('%:e') == "html" && search("{{") != 0
+        set filetype=gohtmltmpl
+    endif
+endfunction
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
 
 function! GoToDefinition()
   Ggrep 'def \<<cword>\>' **
@@ -268,31 +337,44 @@ function! GoToSearch()
   Ggrep '\<<cword>\>' **
 endfunction
 
+""""""""""""""""""""""""""""
+" CUSTOM Key-bindings
+""""""""""""""""""""""""""""
+
+nnoremap <Space>cl :<C-u> nohlsearch<CR><C-l>
+
+"Clean quick-fix window
+nmap <Space>qc :cexpr []<CR>
+nnoremap <C-W>q :Copen<CR>
+nnoremap <Space>o :call QuickFix_toggle()<CR>
+nnoremap <Space>s :call RunNearestSpec()<CR>
+nnoremap <Space>l :call RunLastSpec()<CR>
+nnoremap <Space>a :call RunCurrentSpecFile()<CR>
+nnoremap <Space>af :Dispatch! rspec --only-failures<CR>
 nnoremap <Space>gd :call GoToDefinition()<CR><CR>zz
 nnoremap <Space>gs :call GoToSearch()<CR>
 nnoremap <Space>ag :Ag<CR>
+inoremap jk <ESC>
 
-let g:rspec_command = "Dispatch! rspec --color {spec}"
+"Custom Snippets
+nnoremap <Space>r :Dispatch! bundle exec rubocop -a -c .rubocop.yml %<CR>
+nnoremap <Space>shot :-1read ~/.vim/snippets/.screenshot.rb<CR>>>.
+nnoremap <Space>here :-1read ~/.vim/snippets/.debug_puts.rb<CR>
+nnoremap <Space>html :-1read ~/.vim/snippets/.write_feature_html.rb<CR>v2j>.
+nnoremap <Space>scenario :-1read ~/.vim/snippets/.scenario.rb<CR>v6j>wa
+nnoremap <Space>issue : !gitlab issues create "" "$(cat %)"<CR>
+nnoremap <Space>ni :new tmp/issue.md<CR>3ja
+nnoremap <Space>ci :w \| !gitlab issues create "" "$(cat %)" && cp -f ~/.vim/snippets/.issue.md tmp/issue.md<CR>
+nnoremap <Space>mc : !gitlab comments create 'new-branch' "$(echo @%)"  "$(echo line('.'))" "$(cat %)"
 
-set background=dark
+""""""""""""""""""""""""""""
+" Linter
+""""""""""""""""""""""""""""
 
-au FileType gitcommit setlocal tw=72
-
-set diffopt+=vertical
-
-set complete-=i
-
-let prettier=$PRETTIER
-
-if prettier == 'true'
-  :autocmd BufWritePost * Dispatch! yarn prettier --write <afile>
-endif
-
-augroup twig_ft
-  au!
-  autocmd BufNewFile,BufRead *.js.haml   set syntax=javascript
-augroup END
-
+"Linter Signs column on the left - Warnings + Errors
+set signcolumn=yes
+"Make highlight transparent
+au VimEnter * highlight clear SignColumn
 
 let g:ale_sign_error = '●'
 let g:ale_sign_warning = '!'
@@ -300,28 +382,33 @@ let g:ale_sign_warning = '!'
 let g:ale_fixers = {
       \   '*': ['remove_trailing_lines', 'trim_whitespace'],
       \   'javascript': ['eslint'],
-      \   'ruby': ['rubocop'],
+      \   'vue': ['eslint'],
+      "\   'ruby': ['rubocop'],
       \}
 
 let g:ale_fix_on_save = 1
-" if hidden is not set, TextEdit might fail.
-set hidden
 
-" Some servers have issues with backup files, see #649
-"set nobackup
-"set nowritebackup
+" Prettier Autocorrect - Custom
+" Should be integrated differently
+let prettier=$PRETTIER
+if prettier == 'true'
+  :autocmd BufWritePost * Dispatch! yarn prettier --write <afile>
+endif
 
-" Better display for messages
-"set cmdheight=2
+""""""""""""""""""""""""""""
+" NeoVim COC
+""""""""""""""""""""""""""""
 
+
+" TODO: I changed this to `w` from `i`
+" I Don't Know if it even does anything
+set complete-=w
+"
 " You will have bad experience for diagnostic messages when it's default 4000.
 set updatetime=300
 
 " don't give |ins-completion-menu| messages.
 set shortmess+=c
-
-" always show signcolumns
-set signcolumn=yes
 
 " Use tab for trigger completion with characters ahead and navigate.
 " Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
@@ -336,19 +423,15 @@ function! s:check_back_space() abort
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 
+"Expand Snippets using COC plug-ins
 inoremap <expr> <C-e> coc#_select_confirm()
-""<Plug>(coc-snippets-expand)
 
 "" Use <c-space> to trigger completion.
 inoremap <silent><expr> <c-space> coc#refresh()
 
-" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current position.
-" Coc only does snippet and additional edit on confirm.
+" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current
+" position.  Coc only does snippet and additional edit on confirm.
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-
-" Use `[g` and `]g` to navigate diagnostics
-"nmap <silent> [g <Plug>(coc-diagnostic-prev)
-"nmap <silent> ]g <Plug>(coc-diagnostic-next)
 
 " Remap keys for gotos
 nmap <silent> gd <Plug>(coc-definition)
@@ -359,117 +442,45 @@ nmap <silent> gr <Plug>(coc-references)
 " Use K to show documentation in preview window
 nnoremap <silent> H :call <SID>show_documentation()<CR>
 
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('doHover')
-  endif
-endfunction
-
 " Highlight symbol under cursor on CursorHold
 autocmd CursorHold * silent call CocActionAsync('highlight')
 
 " Remap for rename current word
 nmap <leader>rn <Plug>(coc-rename)
 
-" Remap for format selected region
-xmap <leader>f  <Plug>(coc-format-selected)
-nmap <leader>f  <Plug>(coc-format-selected)
-
-augroup mygroup
-  autocmd!
-  " Setup formatexpr specified filetype(s).
-  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
-  " Update signature help on jump placeholder
-  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
-augroup end
-
-" Remap for do codeAction of selected region, ex: `<leader>aap` for current paragraph
-xmap <leader>a  <Plug>(coc-codeaction-selected)
-nmap <leader>a  <Plug>(coc-codeaction-selected)
-
-" Remap for do codeAction of current line
-nmap <leader>ac  <Plug>(coc-codeaction)
-" Fix autofix problem of current line
-nmap <space>qf  <Plug>(coc-fix-current)
-
-" Create mappings for function text object, requires document symbols feature of languageserver.
-xmap if <Plug>(coc-funcobj-i)
-xmap af <Plug>(coc-funcobj-a)
-omap if <Plug>(coc-funcobj-i)
-omap af <Plug>(coc-funcobj-a)
-
-" Use <tab> for select selections ranges, needs server support, like: coc-tsserver, coc-python
-nmap <silent> <TAB> <Plug>(coc-range-select)
-xmap <silent> <TAB> <Plug>(coc-range-select)
-xmap <silent> <S-TAB> <Plug>(coc-range-select-backword)
-
-" Use `:Format` to format current buffer
-command! -nargs=0 Format :call CocAction('format')
-
 " Use `:Fold` to fold current buffer
 command! -nargs=? Fold :call     CocAction('fold', <f-args>)
+
+set foldenable
 
 " use `:OR` for organize import of current buffer
 command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
 
-" Add status line support, for integration with other plugin, checkout `:h coc-status`
+" Add status line support, for integration with other plugin, checkout `:h
+" coc-status`
 set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 
-" Using CocList
-" Show all diagnostics
-"nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>
-"" Manage extensions
-"nnoremap <silent> <space>e  :<C-u>CocList extensions<cr>
-"" Show commands
-"nnoremap <silent> <space>c  :<C-u>CocList commands<cr>
-"" Find symbol of current document
-"nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
-"" Search workspace symbols
-"nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
-"" Do default action for next item.
-"nnoremap <silent> <space>j  :<C-u>CocNext<CR>
-"" Do default action for previous item.
-"nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
-"" Resume latest coc list
-"nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
-"
 function! CocCurrentFunction()
     return get(b:, 'coc_current_function', '')
 endfunction
 
-let g:lightline = {
-      \ 'colorscheme': 'dracula',
-      \ 'active': {
-      \   'left': [ [ 'mode', 'paste' ],
-      \             [ 'cocstatus', 'currentfunction', 'readonly', 'filename', 'modified' ] ]
-      \ },
-      \ 'component_function': {
-      \   'cocstatus': 'coc#status',
-      \   'currentfunction': 'CocCurrentFunction'
-      \ },
-      \ }
+" Calendar credentials
+source ~/.cache/calendar.vim/credentials.vim
 
-" FZF configuration
-let $FZF_DEFAULT_COMMAND = 'ag -g ""'
+let g:calendar_google_calendar = 1
 
-" italic and bold stuff
-"set t_ZH=[3m
-"set t_ZH=[23m
+function! TaskDone()
+  s/TODO/DONE/g
+endfunction
 
-" ----------------------------------------------------------------------------
-" Cursor Change on Insert
-" ----------------------------------------------------------------------------
-" Set up vertical vs block cursor for insert/normal mode
-if &term =~ "screen."
-    let &t_ti.="\eP\e[1 q\e\\"
-    let &t_SI.="\eP\e[5 q\e\\"
-    let &t_EI.="\eP\e[1 q\e\\"
-    let &t_te.="\eP\e[0 q\e\\"
-else
-    let &t_ti.="\<Esc>[1 q"
-    let &t_SI.="\<Esc>[5 q"
-    let &t_EI.="\<Esc>[1 q"
-    let &t_te.="\<Esc>[0 q"
-endif
+function! TaskRemove()
+  . w >>
+  .d
+endfunction
+
+function! TaskAdd()
+endfunction
+
+nnoremap <Space>d :call TaskDone()<CR>
+nnoremap <Space>dd :call TaskRemove()<CR>
+nnoremap <Space>tt oTODO -<space>
