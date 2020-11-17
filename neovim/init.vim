@@ -3,6 +3,10 @@ set exrc
 set secure
 filetype off
 runtime macros/matchit.vim
+"
+" Disable files that already have synatx highlighting plugins
+let g:polyglot_disabled = ['ruby', 'haml', 'markdown']
+
 call plug#begin('~/.vim/plugged')
 
 "Utilities
@@ -23,12 +27,13 @@ Plug 'junegunn/fzf.vim'
 Plug 'itchyny/lightline.vim'
 
 "Linter
-Plug 'dense-analysis/ale'
+"Plug 'dense-analysis/ale'
 "
 " Intellisense
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'wellle/tmux-complete.vim'
-
+Plug 'OmniSharp/omnisharp-vim'
+"
 "Git Tools
 Plug 'tpope/vim-fugitive'
 Plug 'idanarye/vim-merginal' " Requires fugitive
@@ -75,18 +80,18 @@ Plug 'AndrewRadev/splitjoin.vim'
 "Calendar
 Plug 'itchyny/calendar.vim'
 
+"syntax highlighting
+Plug 'sheerun/vim-polyglot'
+
 call plug#end()
 
 " Shell executable
 set shell=/bin/zsh
 
+let g:OmniSharp_server_use_mono = 1
+let g:OmniSharp_selector_ui = 'fzf'
 " When using `gf` to navigate files
 set suffixesadd+=.rb,.js,.md
-
-" Enable filetype-specific indenting and plug-ins
-filetype plugin indent on
-set autoindent
-
 " smart case-insensitive searches - Coupled together
 " Using smartcase (requires ignorecase)
 set ignorecase
@@ -97,7 +102,7 @@ augroup myfiletypes
 " Clear old autocmds in group
 autocmd!
 " autoindent with two spaces, always expand tabs
-autocmd FileType ruby,eruby,:yaml,markdown,haml set ai sw=2 sts=2 et
+autocmd FileType ruby,eruby,:yaml,markdown set ai sw=2 sts=2 et
 augroup END
 
 " TODO: Does this overwrite the one above?
@@ -109,10 +114,15 @@ augroup twig_ft
   autocmd BufNewFile,BufRead *.js.haml   set syntax=javascript
 augroup END
 
+
 " To allow for hml + GO syntax in HUGO files
 augroup filetypedetect
     au! BufRead,BufNewFile * call DetectGoHtmlTmpl()
 augroup END
+
+" Enable filetype-specific indenting and plug-ins
+filetype plugin indent on
+set autoindent
 
 " Yank/Copy Setting
 set clipboard=unnamed
@@ -134,6 +144,10 @@ set noshowmode
 "Color Scheme Options
 let g:rainbow_active = 1
 
+function! CocCurrentFunction()
+    return get(b:, 'coc_current_function', '')
+endfunction
+
 let g:lightline = {
       \ 'colorscheme': 'dracula',
       \ 'active': {
@@ -149,12 +163,18 @@ let g:lightline = {
 let g:limelight_conceal_ctermfg = 'gray'
 
 autocmd VimEnter * call SetupLightlineColors()
+
 " Allow for custom background
 let g:dracula_colorterm = 0
 
 syntax enable
+
 colorscheme dracula
 set background=dark
+
+"colorscheme solarized
+"set background=light
+"syntax enable
 
 "Autocomplete window colors
 au VimEnter * highlight Pmenu ctermbg=black guibg=black ctermfg=blue
@@ -257,7 +277,7 @@ let g:rspec_command = "Dispatch! rspec --color {spec}"
 
 " FZF configuration to set silver-searcher as default
 let $FZF_DEFAULT_COMMAND = 'ag -g ""'
-
+let g:fzf_history_dir = '~/.local/share/fzf-history'
 "FZF file Finder
 nnoremap <Space>f :Files<CR>
 
@@ -361,6 +381,12 @@ nnoremap <Space>r :Dispatch! bundle exec rubocop -a -c .rubocop.yml %<CR>
 nnoremap <Space>shot :-1read ~/.vim/snippets/.screenshot.rb<CR>>>.
 nnoremap <Space>here :-1read ~/.vim/snippets/.debug_puts.rb<CR>
 nnoremap <Space>html :-1read ~/.vim/snippets/.write_feature_html.rb<CR>v2j>.
+nnoremap <Space>dc a{ data: { controller: "" } }<ESC>F"i
+nnoremap <Space>dt a{ data: { target: "" } }<ESC>F"i
+nnoremap <Space>da a{ data: { action: "" } }<ESC>F"i
+nnoremap <Space>dic a data: { controller: "" }<ESC>F"i
+nnoremap <Space>dit a data: { target: "" } <ESC>F"i
+nnoremap <Space>dia a data: { action: "" } <ESC>F"i
 nnoremap <Space>scenario :-1read ~/.vim/snippets/.scenario.rb<CR>v6j>wa
 nnoremap <Space>issue : !gitlab issues create "" "$(cat %)"<CR>
 nnoremap <Space>ni :new tmp/issue.md<CR>3ja
@@ -376,29 +402,16 @@ set signcolumn=yes
 "Make highlight transparent
 au VimEnter * highlight clear SignColumn
 
-let g:ale_sign_error = '●'
-let g:ale_sign_warning = '!'
-
-let g:ale_fixers = {
-      \   '*': ['remove_trailing_lines', 'trim_whitespace'],
-      \   'javascript': ['eslint'],
-      \   'vue': ['eslint'],
-      "\   'ruby': ['rubocop'],
-      \}
-
-let g:ale_fix_on_save = 1
-
-" Prettier Autocorrect - Custom
-" Should be integrated differently
-let prettier=$PRETTIER
-if prettier == 'true'
-  :autocmd BufWritePost * Dispatch! yarn prettier --write <afile>
-endif
+"---------------------------
+"let g:ale_sign_error = '●'
+"let g:ale_sign_warning = '!'
+"
 
 """"""""""""""""""""""""""""
 " NeoVim COC
 """"""""""""""""""""""""""""
 
+let g:coc_global_extensions = ['coc-solargraph']
 
 " TODO: I changed this to `w` from `i`
 " I Don't Know if it even does anything
@@ -459,10 +472,6 @@ command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organize
 " Add status line support, for integration with other plugin, checkout `:h
 " coc-status`
 set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
-
-function! CocCurrentFunction()
-    return get(b:, 'coc_current_function', '')
-endfunction
 
 " Calendar credentials
 source ~/.cache/calendar.vim/credentials.vim
