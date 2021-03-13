@@ -11,7 +11,7 @@ set $mod Mod1
 font pango:System San Francisco Display 8
 
 # Use Mouse+$mod to drag floating windows to their wanted position
-floating_modifier $mod
+#floating_modifier $mod
 
 # start a terminal
 bindsym $mod+Return exec i3-sensible-terminal
@@ -24,7 +24,7 @@ bindsym $mod+Shift+q kill
 # There also is the (new) i3-dmenu-desktop which only displays applications
 # shipping a .desktop file. It is a wrapper around dmenu, so you need that
 # installed.
-bindsym $mod+d exec --no-startup-id i3-dmenu-desktop
+bindsym $mod+d exec dmenu_run -nb '#282a36' -sf '#ffffff' -sb '#50fa7b' -nf '#bbbbbb'
 
 # change focus
 #bindsym $mod+j focus left
@@ -81,11 +81,11 @@ set $workspace1 "1) Terminals "
 set $workspace2 "2) Vim  "
 set $workspace3 "3) Docs "
 set $workspace4 "4) Chrome  "
-set $workspace5 "5) Email  "
-set $workspace6 "6) Chat  "
+set $workspace5 "5) Chat  "
+set $workspace6 "6) Email  "
 set $workspace7 "7) FireFox  "
 set $workspace9 "9) Music "
-set $workspace0 "0) Random  "
+set $workspace10 "0) Random  "
 
 # switch to workspace
 bindsym $mod+1 workspace $workspace1
@@ -147,7 +147,7 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
-set $bg-color 	         #BD93F9
+set $bg-color 	         #9B6BDF
 set $inactive-bg-color   #282A36
 set $text-color          #f3f4f5
 set $inactive-text-color #676E7D
@@ -214,3 +214,7 @@ exec --no-startup-id xmodmap -e "keysym Caps_Lock = Escape" #set caps_lock as es
 # Screen Shots (Device Agnostic)
 bindsym Print exec scrot '%Y-%m-%d-%s_screenshot_$wx$h.jpg' -e 'mv $f ~/Pictures/'
 bindsym Control+Print exec gnome-screenshot -i
+
+focus_follows_mouse no
+mouse_warping none
+

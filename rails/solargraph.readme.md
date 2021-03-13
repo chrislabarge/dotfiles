@@ -7,6 +7,8 @@
 
 `solargraph download-core`
 
+`solargraph bundle`
+
 
 The definitions file is for have the RAILS Libraries load on the language server.
 

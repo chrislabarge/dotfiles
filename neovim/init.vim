@@ -40,7 +40,6 @@ Plug 'idanarye/vim-merginal' " Requires fugitive
 
 "Color Themes
 Plug 'dracula/vim', { 'name': 'dracula'  }
-Plug 'luochen1990/rainbow'
 Plug 'altercation/vim-colors-solarized'
 "Plug 'flazz/vim-colorschemes'
 
@@ -83,10 +82,17 @@ Plug 'itchyny/calendar.vim'
 "syntax highlighting
 Plug 'sheerun/vim-polyglot'
 
+"Plug 'frazrepo/vim-rainbow'
+Plug 'luochen1990/rainbow'
+
+Plug 'jpalardy/vim-slime'
+
 call plug#end()
 
 " Shell executable
 set shell=/bin/zsh
+
+let g:slime_target = "neovim"
 
 let g:OmniSharp_server_use_mono = 1
 let g:OmniSharp_selector_ui = 'fzf'
@@ -141,9 +147,6 @@ set expandtab
 set laststatus=2
 set noshowmode
 
-"Color Scheme Options
-let g:rainbow_active = 1
-
 function! CocCurrentFunction()
     return get(b:, 'coc_current_function', '')
 endfunction
@@ -181,6 +184,14 @@ au VimEnter * highlight Pmenu ctermbg=black guibg=black ctermfg=blue
 au VimEnter * highlight PmenuSbar ctermbg=black
 au VimEnter * highlight PmenuThumb ctermbg=blue
 
+let g:rainbow_active = 1
+"""""""""""""""""""""""""""""""""""""""""
+"" Rainbow plugin
+"""""""""""""""""""""""""""""""""""""""""
+"let g:rainbow_guifgs = ['LightBlue1', 'SeaGreen2', 'LightCyan1', 'HotPink']
+"let g:rainbow_ctermfgs = ['cyan', 'orange', 'yellow', 'red', 'magenta']
+
+
 """"""""""""""""""""""""""""""""""""""""
 " Custom Highlights
 """"""""""""""""""""""""""""""""""""""""
@@ -195,6 +206,10 @@ sy match todoStatus "\v<TODO>"
 highlight todoStatus cterm=bold ctermbg=NONE ctermfg=red
 sy match testStatus "\v<TEST>"
 highlight testStatus cterm=bold ctermbg=NONE ctermfg=cyan
+sy match doingStatus "\v<DOING>"
+highlight doingStatus cterm=bold ctermbg=NONE ctermfg=yellow
+sy match blockedStatus "\v<BLOCKED>"
+highlight blockedStatus cterm=bold ctermbg=NONE ctermfg=magenta
 
 """"""""""""""""""""""""""""""""""""""""
 " BACKUP / TMP FILES
@@ -357,6 +372,13 @@ function! GoToSearch()
   Ggrep '\<<cword>\>' **
 endfunction
 
+function! CreateRailsSlime()
+  tabedit tmp/rails_repl_a.rb
+  vsp tmp/rails_repl_b.rb
+  terminal rails c
+  tabn
+endfunction
+
 """"""""""""""""""""""""""""
 " CUSTOM Key-bindings
 """"""""""""""""""""""""""""
@@ -371,13 +393,15 @@ nnoremap <Space>s :call RunNearestSpec()<CR>
 nnoremap <Space>l :call RunLastSpec()<CR>
 nnoremap <Space>a :call RunCurrentSpecFile()<CR>
 nnoremap <Space>af :Dispatch! rspec --only-failures<CR>
+nnoremap <Space>ssf :Dispatch! feh tmp/capybara/foo.png<CR>
+nnoremap <Space>ss :Dispatch!show-mednote-screenshot<CR>
 nnoremap <Space>gd :call GoToDefinition()<CR><CR>zz
 nnoremap <Space>gs :call GoToSearch()<CR>
 nnoremap <Space>ag :Ag<CR>
 inoremap jk <ESC>
 
 "Custom Snippets
-nnoremap <Space>r :Dispatch! bundle exec rubocop -a -c .rubocop.yml %<CR>
+nnoremap <Space>r :Dispatch! bundle exec rubocop -A -c .rubocop.yml %<CR>
 nnoremap <Space>shot :-1read ~/.vim/snippets/.screenshot.rb<CR>>>.
 nnoremap <Space>here :-1read ~/.vim/snippets/.debug_puts.rb<CR>
 nnoremap <Space>html :-1read ~/.vim/snippets/.write_feature_html.rb<CR>v2j>.
@@ -401,11 +425,6 @@ nnoremap <Space>mc : !gitlab comments create 'new-branch' "$(echo @%)"  "$(echo 
 set signcolumn=yes
 "Make highlight transparent
 au VimEnter * highlight clear SignColumn
-
-"---------------------------
-"let g:ale_sign_error = '●'
-"let g:ale_sign_warning = '!'
-"
 
 """"""""""""""""""""""""""""
 " NeoVim COC
@@ -479,7 +498,7 @@ source ~/.cache/calendar.vim/credentials.vim
 let g:calendar_google_calendar = 1
 
 function! TaskDone()
-  s/TODO/DONE/g
+  s/TODO/DONE/g | s/BLOCKED/DONE/g
 endfunction
 
 function! TaskRemove()
@@ -493,3 +512,10 @@ endfunction
 nnoremap <Space>d :call TaskDone()<CR>
 nnoremap <Space>dd :call TaskRemove()<CR>
 nnoremap <Space>tt oTODO -<space>
+
+" Hide the tabline
+:set showtabline=0
+
+" Remap the default leave (Vim) terminal bindings
+:tnoremap <Esc> <C-\><C-n>
+

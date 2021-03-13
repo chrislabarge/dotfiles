@@ -4,6 +4,11 @@
 # or operating system, you probably want to add a global ignore instead:
 #   git config --global core.excludesfile '~/.gitignore_global'
 
+#vim
+quickfix.out
+
+google-credentials.json
+
 # environment variable file
 .env
 
@@ -11,6 +16,8 @@
 /doc
 doc/*
 doc
+
+/email_framework
 
 /.yardoc/*
 /.yardoc/
