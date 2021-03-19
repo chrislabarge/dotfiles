@@ -77,7 +77,7 @@ Plug 'tpope/vim-repeat'
 Plug 'AndrewRadev/splitjoin.vim'
 
 "Calendar
-Plug 'itchyny/calendar.vim'
+"Plug 'itchyny/calendar.vim'
 
 "syntax highlighting
 Plug 'sheerun/vim-polyglot'
@@ -493,12 +493,12 @@ command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organize
 set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 
 " Calendar credentials
-source ~/.cache/calendar.vim/credentials.vim
+"source ~/.cache/calendar.vim/credentials.vim
 
-let g:calendar_google_calendar = 1
+"let g:calendar_google_calendar = 1
 
 function! TaskDone()
-  s/TODO/DONE/g | s/BLOCKED/DONE/g
+  s/TODO/DONE/g | s/BLOCKED/DONE/g | s/→/✔️/g
 endfunction
 
 function! TaskRemove()
@@ -512,6 +512,8 @@ endfunction
 nnoremap <Space>d :call TaskDone()<CR>
 nnoremap <Space>dd :call TaskRemove()<CR>
 nnoremap <Space>tt oTODO -<space>
+"sub-task/todo
+nnoremap <Space>st o<C-K>-><space><space>
 
 " Hide the tabline
 :set showtabline=0
