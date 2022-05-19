@@ -13,12 +13,13 @@
 #     extend ActiveSupport::Callbacks::ClassMethods
 #     extend AbstractController::Callbacks::ClassMethods
 #   end
-#   class ActiveRecord::Base
-#     extend ActiveRecord::QueryMethods
-#     extend ActiveRecord::FinderMethods
-#     extend ActiveRecord::Associations::ClassMethods
-#     extend ActiveRecord::Inheritance::ClassMethods
-#     include ActiveRecord::Persistence
+#   class ActionController::Base
+#     include ActionController::MimeResponds
+#     include ActionController::Redirecting
+#     include ActionController::StrongParameters
+#     include AbstractController::Rendering
+#     extend ActiveSupport::Callbacks::ClassMethods
+#     extend AbstractController::Callbacks::ClassMethods
 #   end
 # @!override ActiveRecord::FinderMethods#find
 #   @overload find(id)

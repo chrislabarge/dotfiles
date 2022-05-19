@@ -1,11 +1,12 @@
+"set exrc
 set nocompatible " be iMproved
-set exrc
-set secure
 filetype off
 runtime macros/matchit.vim
 "
 " Disable files that already have synatx highlighting plugins
 let g:polyglot_disabled = ['ruby', 'haml', 'markdown']
+
+let mapleader = " " " map leader to Space
 
 call plug#begin('~/.vim/plugged')
 
@@ -379,6 +380,24 @@ function! CreateRailsSlime()
   tabn
 endfunction
 
+function! OpenScreenShot()
+  let base = "tmp/screenshots/"
+  let path = system("ls " . base . " -Art | tail -n 1")
+  let full_command = ViewImageCommand() . " " . base . path
+  execute "!" . full_command
+endfunction
+
+function! RubocopAutoFix(filepath)
+  execute "! rubocop -A -c .rubocop.yml" . filepath " || rubocop -a -c.rubocop.yml" . filepath
+endfunction
+
+function! ViewImageCommand()
+  if len($DEFAULT_IMG_VIEWER) > 0
+    return $DEFAULT_IMG_VIEWER
+  else
+    return "feh"
+  endif
+endfunction
 """"""""""""""""""""""""""""
 " CUSTOM Key-bindings
 """"""""""""""""""""""""""""
@@ -389,19 +408,20 @@ nnoremap <Space>cl :<C-u> nohlsearch<CR><C-l>
 nmap <Space>qc :cexpr []<CR>
 nnoremap <C-W>q :Copen<CR>
 nnoremap <Space>o :call QuickFix_toggle()<CR>
-nnoremap <Space>s :call RunNearestSpec()<CR>
+nnoremap <Leader>s :call RunNearestSpec()<CR>
 nnoremap <Space>l :call RunLastSpec()<CR>
 nnoremap <Space>a :call RunCurrentSpecFile()<CR>
 nnoremap <Space>af :Dispatch! rspec --only-failures<CR>
-nnoremap <Space>ssf :Dispatch! feh tmp/capybara/foo.png<CR>
-nnoremap <Space>ss :Dispatch!show-mednote-screenshot<CR>
+nnoremap <Leader>ss :silent call OpenScreenShot()<CR>
+
 nnoremap <Space>gd :call GoToDefinition()<CR><CR>zz
 nnoremap <Space>gs :call GoToSearch()<CR>
 nnoremap <Space>ag :Ag<CR>
+nnoremap <Space>b :Buffer<CR>
 inoremap jk <ESC>
 
 "Custom Snippets
-nnoremap <Space>r :Dispatch! bundle exec rubocop -A -c .rubocop.yml %<CR>
+nnoremap <Space>r :Dispatch! rubocop -a -c .rubocop.yml %<CR>
 nnoremap <Space>shot :-1read ~/.vim/snippets/.screenshot.rb<CR>>>.
 nnoremap <Space>here :-1read ~/.vim/snippets/.debug_puts.rb<CR>
 nnoremap <Space>html :-1read ~/.vim/snippets/.write_feature_html.rb<CR>v2j>.
@@ -520,4 +540,6 @@ nnoremap <Space>st o<C-K>-><space><space>
 
 " Remap the default leave (Vim) terminal bindings
 :tnoremap <Esc> <C-\><C-n>
+
+"set secure
 
